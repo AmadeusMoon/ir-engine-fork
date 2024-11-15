@@ -50,6 +50,7 @@ import { RendererState } from '@ir-engine/spatial/src/renderer/RendererState'
 import { SceneComponent } from '@ir-engine/spatial/src/renderer/components/SceneComponents'
 import { EntityTreeComponent } from '@ir-engine/spatial/src/transform/components/EntityTree'
 import { act, render } from '@testing-library/react'
+import React from 'react'
 import { Quaternion, Vector3 } from 'three'
 import { v4 } from 'uuid'
 import { afterEach, assert, beforeEach, describe, it } from 'vitest'
@@ -132,8 +133,15 @@ describe('MountPointComponent.ts', async () => {
       it('Should update the UI to show or hide a component in the dropdown button based on wheter or not its interacteable', async () => {
         MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
         applyIncomingActions()
-        const { rerender, unmount } = render(MountPointComponent.reactor)
+        const { rerender, unmount } = render(<></>)
         await act(async () => rerender(MountPointComponent.reactor))
+        const mountPointPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
+        assert.equal(!!mountPointPresent, true)
+        MountPointComponent.unmountEntity(avatarTestEntity)
+        applyIncomingActions()
+        await act(async () => rerender(MountPointComponent.reactor))
+        const mountPointNotPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
+        assert.equal(!!mountPointNotPresent, false)
       })
 
       it('Should add an arrow helper component if debug is enabled', () => {
@@ -292,16 +300,16 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should release avatarEntity movement', () => {
-      setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       MountPointComponent.unmountEntity(avatarTestEntity)
+      setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       const component = getComponent(avatarTestEntity, AvatarControllerComponent)
       const componentMovementReleased = component.movementCaptured.indexOf(mountPointTestEntity)
       assert.equal(componentMovementReleased, -1)
     })
 
     it('Should dispatch action to unmount entity', () => {
-      setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       MountPointComponent.unmountEntity(avatarTestEntity)
+      setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       const actionDispatching = HyperFlux.store.actions.incoming[1].type === MountPointActions.mountInteraction.type
       // Check if action is dispatched
       assert.equal(actionDispatching, true)
@@ -315,13 +323,12 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should not set the avatar position to the dismount position if no raycast hit or force dismount position is false', () => {
+      MountPointComponent.unmountEntity(avatarTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
         dismountOffset: new Vector3(1, 2, 3),
         forceDismountPosition: false
       })
-
-      MountPointComponent.unmountEntity(avatarTestEntity)
       const avatarPosition = getComponent(avatarTestEntity, RigidBodyComponent).position
       const dismountPosition = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
       assert.notEqual(avatarPosition.x, dismountPosition.x)
