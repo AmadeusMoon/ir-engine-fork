@@ -279,6 +279,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should return early if avatarEntity has no sitting component', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       removeComponent(avatarTestEntity, SittingComponent)
       MountPointComponent.unmountEntity(avatarTestEntity)
       const actionDispatch = HyperFlux.store.actions.incoming.length
@@ -286,6 +287,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should remove the looping of the seated animation', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       MountPointComponent.unmountEntity(avatarTestEntity)
       const actionDispatching = HyperFlux.store.actions.incoming[0].type === AvatarNetworkAction.setAnimationState.type
       // Check if action is dispatched
@@ -300,6 +302,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should release avatarEntity movement', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       MountPointComponent.unmountEntity(avatarTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       const component = getComponent(avatarTestEntity, AvatarControllerComponent)
@@ -308,6 +311,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should dispatch action to unmount entity', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       MountPointComponent.unmountEntity(avatarTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       const actionDispatching = HyperFlux.store.actions.incoming[1].type === MountPointActions.mountInteraction.type
@@ -323,12 +327,13 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should not set the avatar position to the dismount position if no raycast hit or force dismount position is false', () => {
-      MountPointComponent.unmountEntity(avatarTestEntity)
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
         dismountOffset: new Vector3(1, 2, 3),
         forceDismountPosition: false
       })
+      MountPointComponent.unmountEntity(avatarTestEntity)
       const avatarPosition = getComponent(avatarTestEntity, RigidBodyComponent).position
       const dismountPosition = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
       assert.notEqual(avatarPosition.x, dismountPosition.x)
@@ -337,13 +342,14 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should set the avatar position to the dismount position if force dismount position is true', async () => {
-      MountPointComponent.unmountEntity(avatarTestEntity)
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       // Set force dismount to false
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
         dismountOffset: new Vector3(1, 2, 3),
         forceDismountPosition: false
       })
+      MountPointComponent.unmountEntity(avatarTestEntity)
       const avatarPosition = getComponent(avatarTestEntity, RigidBodyComponent).position
       const dismountPosition = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
       // Check that the original avatar position is not the same as dismount position
@@ -356,6 +362,7 @@ describe('MountPointComponent.ts', async () => {
         forceDismountPosition: true
       })
       // Check the position has changed to dismountOffset
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       MountPointComponent.unmountEntity(avatarTestEntity)
       const avatarPositionChanged = getComponent(avatarTestEntity, RigidBodyComponent).position
       const dismountPosition2 = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
@@ -365,6 +372,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should set the avatar position to dismount position if no force dismount and raycast hit', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       const groundPlaneEntity = createEntity()
       setComponent(groundPlaneEntity, EntityTreeComponent, { parentEntity: physicsWorldEntity })
       setComponent(groundPlaneEntity, UUIDComponent, v4() as EntityUUID)
@@ -391,6 +399,7 @@ describe('MountPointComponent.ts', async () => {
     })
 
     it('Should remove the sitting component from the avatar entity', () => {
+      MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
         dismountOffset: new Vector3(1, 2, 3),
