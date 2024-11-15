@@ -50,7 +50,6 @@ import { RendererState } from '@ir-engine/spatial/src/renderer/RendererState'
 import { SceneComponent } from '@ir-engine/spatial/src/renderer/components/SceneComponents'
 import { EntityTreeComponent } from '@ir-engine/spatial/src/transform/components/EntityTree'
 import { act, render } from '@testing-library/react'
-import React from 'react'
 import { Quaternion, Vector3 } from 'three'
 import { v4 } from 'uuid'
 import { afterEach, assert, beforeEach, describe, it } from 'vitest'
@@ -71,7 +70,7 @@ describe('MountPointComponent.ts', async () => {
   let mountPointTestEntity = UndefinedEntity
   let sceneEntity: Entity
 
-  beforeEach(() => {
+  beforeEach(async () => {
     createEngine()
     Engine.instance.store.userID = 'userId' as UserID
     initializeSpatialEngine()
@@ -99,8 +98,6 @@ describe('MountPointComponent.ts', async () => {
     )
 
     applyIncomingActions()
-    /**@todo Use event sourcing for this once PR from Aidan is merged  */
-    spawnAvatarReceptor(Engine.instance.store.userID as string as EntityUUID)
   })
 
   afterEach(() => {
@@ -134,11 +131,9 @@ describe('MountPointComponent.ts', async () => {
 
       it('Should update the UI to show or hide a component in the dropdown button based on wheter or not its interacteable', async () => {
         MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
-        const { rerender, unmount } = render(<></>)
         applyIncomingActions()
-        await act(async () => {
-          rerender(MountPointComponent.reactor)
-        })
+        const { rerender, unmount } = render(MountPointComponent.reactor)
+        await act(async () => rerender(MountPointComponent.reactor))
       })
 
       it('Should add an arrow helper component if debug is enabled', () => {
@@ -181,17 +176,14 @@ describe('MountPointComponent.ts', async () => {
         })
       )
       applyIncomingActions()
-      const { rerender, unmount } = render(<></>)
-      await act(async () => {
-        rerender(AvatarState.reactor)
-      })
+      const { rerender, unmount } = render(AvatarState.reactor)
+      await act(async () => rerender(AvatarState.reactor))
       // Mount avatar test entity 2 first
       MountPointComponent.mountEntity(avatarTestEntity2, mountPointTestEntity)
       applyIncomingActions()
       // Try to mount avatar test entity
       MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       applyIncomingActions()
-      // Check to see if
       const avatarSeated = getOptionalComponent(avatarTestEntity, SittingComponent)
       const seatOccupied = getState(MountPointState).mountsToMountedEntities
       assert.equal(!!avatarSeated, false)
@@ -337,11 +329,13 @@ describe('MountPointComponent.ts', async () => {
       assert.notEqual(avatarPosition.z, dismountPosition.z)
     })
 
-    it('Should set the avatar position to the dismount position if force dismount position is true', () => {
+    it('Should set the avatar position to the dismount position if force dismount position is true', async () => {
+      MountPointComponent.unmountEntity(avatarTestEntity)
+      // Set force dismount to false
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
         dismountOffset: new Vector3(1, 2, 3),
-        forceDismountPosition: true
+        forceDismountPosition: false
       })
       const avatarPosition = getComponent(avatarTestEntity, RigidBodyComponent).position
       const dismountPosition = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
@@ -349,13 +343,18 @@ describe('MountPointComponent.ts', async () => {
       assert.notEqual(avatarPosition.x, dismountPosition.x)
       assert.notEqual(avatarPosition.y, dismountPosition.y)
       assert.notEqual(avatarPosition.z, dismountPosition.z)
-
+      // Set the force dismount to true
+      setComponent(mountPointTestEntity, MountPointComponent, {
+        dismountOffset: new Vector3(1, 2, 3),
+        forceDismountPosition: true
+      })
+      // Check the position has changed to dismountOffset
       MountPointComponent.unmountEntity(avatarTestEntity)
       const avatarPositionChanged = getComponent(avatarTestEntity, RigidBodyComponent).position
-      // Check that the avatar position has been changed to dismount position
-      assert.equal(avatarPositionChanged.x, dismountPosition.x)
-      assert.equal(avatarPositionChanged.y, dismountPosition.y)
-      assert.equal(avatarPositionChanged.z, dismountPosition.z)
+      const dismountPosition2 = getComponent(mountPointTestEntity, MountPointComponent).dismountOffset
+      assert.equal(avatarPositionChanged.x, dismountPosition2.x)
+      assert.equal(avatarPositionChanged.y, dismountPosition2.y)
+      assert.equal(avatarPositionChanged.z, dismountPosition2.z)
     })
 
     it('Should set the avatar position to dismount position if no force dismount and raycast hit', () => {
