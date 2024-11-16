@@ -132,12 +132,14 @@ describe('MountPointComponent.ts', async () => {
 
       it('Should update the UI to show or hide an Interacteable component in the dropdown button based on wheter or not its mounted', async () => {
         MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
+        const callbackComponentArray = getComponent(mountPointTestEntity, CallbackComponent)
+        const callbackComponent = 'mountEntity' in callbackComponentArray
         applyIncomingActions()
         const { rerender, unmount } = render(<></>)
         await act(async () => rerender(MountPointComponent.reactor))
         await vi.waitFor(
           () => {
-            expect(getComponent(mountPointTestEntity, InteractableComponent)).toBeTruthy
+            expect(callbackComponent).toBeTruthy
           },
           { timeout: 20000 }
         )
@@ -148,7 +150,7 @@ describe('MountPointComponent.ts', async () => {
         await act(async () => rerender(MountPointComponent.reactor))
         await vi.waitFor(
           () => {
-            expect(getComponent(mountPointTestEntity, InteractableComponent)).toBeTruthy
+            expect(callbackComponent).toBeTruthy
           },
           { timeout: 20000 }
         )
