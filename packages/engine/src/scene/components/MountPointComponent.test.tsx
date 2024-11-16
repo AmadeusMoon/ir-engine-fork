@@ -326,7 +326,7 @@ describe('MountPointComponent.ts', async () => {
       assert.equal(mounted, false)
     })
 
-    it('Should not set the avatar position to the dismount position if no raycast hit or force dismount position is false', () => {
+    it('Should not set the avatar position to the dismount position if no raycast hit and force dismount position is false', () => {
       MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       setComponent(avatarTestEntity, SittingComponent, { mountPointEntity: mountPointTestEntity })
       setComponent(mountPointTestEntity, MountPointComponent, {
