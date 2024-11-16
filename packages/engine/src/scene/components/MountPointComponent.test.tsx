@@ -233,7 +233,7 @@ describe('MountPointComponent.ts', async () => {
       assert.equal(avatarSeated.clipName, emoteSeated)
     })
 
-    it('Should dispatch the mount interaction action with the mounted entity, the target mount', () => {
+    it('Should dispatch the mount interaction action with the mounted entity and the target mount', () => {
       MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
       const avatarTestEntityUUID = getComponent(avatarTestEntity, UUIDComponent)
       const mountPointTestEntityUUID = getComponent(mountPointTestEntity, UUIDComponent)
