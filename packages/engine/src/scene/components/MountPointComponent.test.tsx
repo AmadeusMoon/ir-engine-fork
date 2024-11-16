@@ -157,13 +157,13 @@ describe('MountPointComponent.ts', async () => {
   })
 
   describe('mountEntity', () => {
-    it('Should return if no avatar', () => {
+    it('Should return if no avatarEntity', () => {
       MountPointComponent.mountEntity(UndefinedEntity, mountPointTestEntity)
       const actionDispatch = HyperFlux.store.actions.incoming.length
       assert.equal(actionDispatch, 0)
     })
 
-    it('Should return if no mount point', () => {
+    it('Should return if no mountPointEntity', () => {
       MountPointComponent.mountEntity(avatarTestEntity, UndefinedEntity)
       const actionDispatch = HyperFlux.store.actions.incoming.length
       assert.equal(actionDispatch, 0)
