@@ -53,7 +53,7 @@ import { act, render } from '@testing-library/react'
 import React from 'react'
 import { Quaternion, Vector3 } from 'three'
 import { v4 } from 'uuid'
-import { afterEach, assert, beforeEach, describe, it } from 'vitest'
+import { afterEach, assert, beforeEach, describe, expect, it, vi } from 'vitest'
 import { loadEmptyScene } from '../../../tests/util/loadEmptyScene'
 import { emoteAnimations } from '../../avatar/animation/Util'
 import { AvatarComponent } from '../../avatar/components/AvatarComponent'
@@ -135,11 +135,23 @@ describe('MountPointComponent.ts', async () => {
         applyIncomingActions()
         const { rerender, unmount } = render(<></>)
         await act(async () => rerender(MountPointComponent.reactor))
+        await vi.waitFor(
+          () => {
+            expect(getComponent(mountPointTestEntity, InteractableComponent)).toBeTruthy
+          },
+          { timeout: 20000 }
+        )
         const mountPointPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
         assert.equal(!!mountPointPresent, true)
         MountPointComponent.unmountEntity(avatarTestEntity)
         applyIncomingActions()
         await act(async () => rerender(MountPointComponent.reactor))
+        await vi.waitFor(
+          () => {
+            expect(getComponent(mountPointTestEntity, InteractableComponent)).toBeTruthy
+          },
+          { timeout: 20000 }
+        )
         const mountPointNotPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
         assert.equal(!!mountPointNotPresent, false)
       })
