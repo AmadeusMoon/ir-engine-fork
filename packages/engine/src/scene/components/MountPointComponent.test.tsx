@@ -130,7 +130,7 @@ describe('MountPointComponent.ts', async () => {
         assert.equal(callbackComponent, true)
       })
 
-      it('Should update the UI to show or hide a component in the dropdown button based on wheter or not its interacteable', async () => {
+      it('Should update the UI to show or hide an Interacteable component in the dropdown button based on wheter or not its mounted', async () => {
         MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
         applyIncomingActions()
         const { rerender, unmount } = render(<></>)
