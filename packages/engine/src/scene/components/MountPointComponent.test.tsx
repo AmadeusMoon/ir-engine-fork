@@ -132,27 +132,27 @@ describe('MountPointComponent.ts', async () => {
 
       it('Should update the UI to show or hide an Interacteable component in the dropdown button based on wheter or not its mounted', async () => {
         MountPointComponent.mountEntity(avatarTestEntity, mountPointTestEntity)
-        const callbackComponentArray = getComponent(mountPointTestEntity, CallbackComponent)
-        const callbackComponent = 'mountEntity' in callbackComponentArray
         applyIncomingActions()
         const { rerender, unmount } = render(<></>)
         await act(async () => rerender(MountPointComponent.reactor))
+        // Github race condition
         await vi.waitFor(
           () => {
-            expect(callbackComponent).toBeTruthy
+            expect(getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride).toBeTruthy()
           },
-          { timeout: 20000 }
+          { timeout: 10000 }
         )
         const mountPointPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
         assert.equal(!!mountPointPresent, true)
         MountPointComponent.unmountEntity(avatarTestEntity)
         applyIncomingActions()
         await act(async () => rerender(MountPointComponent.reactor))
+        // Github race condition
         await vi.waitFor(
           () => {
-            expect(callbackComponent).toBeTruthy
+            expect(getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride).toBeFalsy()
           },
-          { timeout: 20000 }
+          { timeout: 10000 }
         )
         const mountPointNotPresent = getComponent(mountPointTestEntity, InteractableComponent).uiVisibilityOverride
         assert.equal(!!mountPointNotPresent, false)
