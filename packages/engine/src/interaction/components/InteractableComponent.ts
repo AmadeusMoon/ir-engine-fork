@@ -92,6 +92,7 @@ export enum XRUIActivationType {
 
 const xrDistVec3 = new Vector3()
 const inputPointerPosition = new Vector2()
+// eslint-disable-next-line prefer-const
 let inputPointerEntity = UndefinedEntity
 
 const updateXrDistVec3 = (selfAvatarEntity: Entity) => {
@@ -210,7 +211,7 @@ export const updateInteractableUI = (entity: Entity) => {
  * Adds an interactable UI to the entity if it has label text
  * @param entity
  */
-const addInteractableUI = (entity: Entity) => {
+export const addInteractableUI = (entity: Entity) => {
   const interactable = getComponent(entity, InteractableComponent)
   if (!interactable.label || interactable.label === '' || interactable.uiEntity != UndefinedEntity) return //null or empty label = no ui
 
