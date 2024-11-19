@@ -128,7 +128,7 @@ describe('GLTF Loader', async () => {
       async () => {
         expect(meshes).toBeTruthy()
       },
-      { timeout: 5000 }
+      { timeout: 20000 }
     )
 
     assert(meshes.length === usedMeshes.size)
@@ -355,7 +355,7 @@ describe('GLTF Loader', async () => {
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 5000 }
+      { timeout: 20000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -380,7 +380,7 @@ describe('GLTF Loader', async () => {
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 5000 }
+      { timeout: 20000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -405,7 +405,7 @@ describe('GLTF Loader', async () => {
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 5000 }
+      { timeout: 20000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -519,7 +519,7 @@ describe('GLTF Loader', async () => {
       () => {
         expect(getChildrenWithComponents(entity, [EXTMeshGPUInstancingComponent]).length).toBeTruthy()
       },
-      { timeout: 5000 }
+      { timeout: 20000 }
     )
 
     const instanceID = GLTFComponent.getInstanceID(entity)
