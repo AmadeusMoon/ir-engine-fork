@@ -91,10 +91,10 @@ const setupEntity = () => {
   return entity
 }
 
-describe('GLTF Loader', () => {
+describe('GLTF Loader', async () => {
   overrideFileLoaderLoad()
 
-  beforeEach(async () => {
+  beforeEach(() => {
     createEngine()
   })
 
@@ -110,7 +110,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -120,8 +120,17 @@ describe('GLTF Loader', () => {
       if (typeof node.mesh === 'number') accum.add(node.mesh)
       return accum
     }, new Set<number>())
+    await act(async () => rerender(<></>))
 
     const meshes = getChildrenWithComponents(entity, [MeshComponent])
+
+    await vi.waitFor(
+      async () => {
+        expect(meshes).toBeTruthy()
+      },
+      { timeout: 5000 }
+    )
+
     assert(meshes.length === usedMeshes.size)
     unmount()
   })
@@ -134,7 +143,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -171,7 +180,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -196,7 +205,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -230,7 +239,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -263,7 +272,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -318,9 +327,8 @@ describe('GLTF Loader', () => {
     setComponent(entity, GLTFComponent, { src: morph_gltf })
 
     const { rerender, unmount } = render(<></>)
-    await act(() => rerender(<></>))
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -342,12 +350,12 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
     await vi.waitFor(
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 20000 }
+      { timeout: 5000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -367,12 +375,12 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
     await vi.waitFor(
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 20000 }
+      { timeout: 5000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -392,12 +400,12 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
     await vi.waitFor(
       () => {
         expect(getOptionalComponent(entity, AnimationComponent)).toBeTruthy()
       },
-      { timeout: 20000 }
+      { timeout: 5000 }
     )
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -432,7 +440,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -464,7 +472,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const gltfDocumentState = getState(GLTFDocumentState)
@@ -506,12 +514,12 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
     await vi.waitFor(
       () => {
         expect(getChildrenWithComponents(entity, [EXTMeshGPUInstancingComponent]).length).toBeTruthy()
       },
-      { timeout: 20000 }
+      { timeout: 5000 }
     )
 
     const instanceID = GLTFComponent.getInstanceID(entity)
@@ -565,7 +573,7 @@ describe('GLTF Loader', () => {
 
     const { rerender, unmount } = render(<></>)
     applyIncomingActions()
-    await act(() => rerender(<></>))
+    await act(async () => rerender(<></>))
 
     const instanceID = GLTFComponent.getInstanceID(entity)
     const instanceID2 = GLTFComponent.getInstanceID(entity2)
