@@ -23,20 +23,33 @@ All portions of the code written by the Infinite Reality Engine team are Copyrig
 Infinite Reality Engine. All Rights Reserved.
 */
 
-import { createEngine, createEntity, destroyEngine, getComponent, setComponent, UndefinedEntity } from '@ir-engine/ecs'
+import {
+  createEngine,
+  createEntity,
+  destroyEngine,
+  EntityUUID,
+  getComponent,
+  setComponent,
+  UndefinedEntity,
+  UUIDComponent
+} from '@ir-engine/ecs'
+import { v4 } from 'uuid'
 import { afterEach, assert, beforeEach, describe, it } from 'vitest'
 import { SceneSettingsComponent } from './SceneSettingsComponent'
 
 describe('SceneSettingsComponent', () => {
   let entity = UndefinedEntity
+
   beforeEach(() => {
     createEngine()
     entity = createEntity()
-    setComponent(entity, SceneSettingsComponent)
+    setComponent(entity, UUIDComponent, v4() as EntityUUID)
   })
+
   afterEach(() => {
     destroyEngine()
   })
+
   it('Should set the name to SceneSettingsComponent', () => {
     assert.equal(SceneSettingsComponent.name, 'SceneSettingsComponent')
   })
@@ -44,8 +57,16 @@ describe('SceneSettingsComponent', () => {
     assert.equal(SceneSettingsComponent.jsonID, 'EE_scene_settings')
   })
   it('Should set the initial data of the component correctly', () => {
-    const component = getComponent(entity, SceneSettingsComponent)
-    const expectedInitial = {
+    // Loop through datasets and compare values
+    const assertDatasetsEquals = (actual, expected) => {
+      for (const [key, value] of Object.entries(actual)) {
+        assert.equal(actual[key], expected[key])
+      }
+    }
+
+    setComponent(entity, SceneSettingsComponent)
+    const entityUUID = getComponent(entity, UUIDComponent)
+    const initialData = {
       thumbnailURL: '',
       loadingScreenURL: '',
       primaryColor: '#000000',
@@ -54,5 +75,22 @@ describe('SceneSettingsComponent', () => {
       sceneKillHeight: -10,
       spectateEntity: null
     }
+    const initialComponent = getComponent(entity, SceneSettingsComponent)
+    // Check initial setting
+    assertDatasetsEquals(initialData, initialComponent)
+
+    const changedData = {
+      thumbnailURL: 'url1',
+      loadingScreenURL: 'url2',
+      primaryColor: '#000001',
+      backgroundColor: '#FFFFFG',
+      alternativeColor: '#000001',
+      sceneKillHeight: -1,
+      spectateEntity: entityUUID as EntityUUID
+    }
+    setComponent(entity, SceneSettingsComponent, changedData)
+    const changedComponent = getComponent(entity, SceneSettingsComponent)
+    // Check if data changed correctly
+    assertDatasetsEquals(changedData, changedComponent)
   })
 })
