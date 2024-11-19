@@ -126,7 +126,7 @@ describe('GLTF Loader', async () => {
 
     await vi.waitFor(
       async () => {
-        expect(meshes).toBeTruthy()
+        expect(getChildrenWithComponents(entity, [MeshComponent]).length).toBeTruthy()
       },
       { timeout: 20000 }
     )
