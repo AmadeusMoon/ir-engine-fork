@@ -35,13 +35,11 @@ import {
 import { ImmutableArray, useHookstate } from '@ir-engine/hyperflux'
 
 import { PopoverState } from '@ir-engine/client-core/src/common/services/PopoverState'
-import { Checkbox, Input } from '@ir-engine/ui'
+import { Button, Checkbox, Input, Select } from '@ir-engine/ui'
 import { Slider } from '@ir-engine/ui/editor'
 import InputGroup from '@ir-engine/ui/src/components/editor/input/Group'
 import SelectInput from '@ir-engine/ui/src/components/editor/input/Select'
-import Button from '@ir-engine/ui/src/primitives/tailwind/Button'
 import LoadingView from '@ir-engine/ui/src/primitives/tailwind/LoadingView'
-import Select from '@ir-engine/ui/src/primitives/tailwind/Select'
 import Text from '@ir-engine/ui/src/primitives/tailwind/Text'
 import { useTranslation } from 'react-i18next'
 import { MdClose } from 'react-icons/md'
@@ -123,11 +121,12 @@ export default function ImageCompressionPanel({
       <div className="relative mb-3 flex items-center justify-center px-8 py-3">
         <Text className="leading-6">{t('editor:properties.model.transform.compressImage')}</Text>
         <Button
-          variant="outline"
+          variant="tertiary"
           className="absolute right-0 border-0 dark:bg-transparent dark:text-[#A3A3A3]"
-          startIcon={<MdClose />}
           onClick={() => PopoverState.hidePopupover()}
-        />
+        >
+          <MdClose />
+        </Button>
       </div>
 
       <div className="mx-auto grid w-4/5 min-w-[400px] justify-center gap-y-2">
@@ -149,13 +148,11 @@ export default function ImageCompressionPanel({
           info={t('editor:properties.model.transform.modeTooltip')}
         >
           <Select
-            className="w-full"
-            inputClassName="px-2 py-0.5 text-theme-input text-sm"
             options={[
               { label: 'ETC1S', value: 'ETC1S' },
               { label: 'UASTC', value: 'UASTC' }
             ]}
-            currentValue={compressProperties.mode.value}
+            value={compressProperties.mode.value}
             onChange={(val: 'ETC1S' | 'UASTC') => compressProperties.mode.set(val)}
           />
         </InputGroup>
@@ -254,7 +251,6 @@ export default function ImageCompressionPanel({
               info={t('editor:properties.model.transform.uastcFlagsTooltip')}
             >
               <SelectInput
-                className="w-full"
                 options={UASTCFlagOptions}
                 value={compressProperties.uastcFlags.value}
                 onChange={(val: number) => compressProperties.uastcFlags.set(val)}

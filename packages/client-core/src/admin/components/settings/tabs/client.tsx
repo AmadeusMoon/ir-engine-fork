@@ -29,11 +29,9 @@ import { HiMinus, HiPlusSmall } from 'react-icons/hi2'
 
 import { clientSettingPath, ClientSettingType } from '@ir-engine/common/src/schema.type.module'
 import { NO_PROXY, State, useHookstate } from '@ir-engine/hyperflux'
-import { Input } from '@ir-engine/ui'
+import { Button, Input, Select } from '@ir-engine/ui'
 import Accordion from '@ir-engine/ui/src/primitives/tailwind/Accordion'
-import Button from '@ir-engine/ui/src/primitives/tailwind/Button'
 import LoadingView from '@ir-engine/ui/src/primitives/tailwind/LoadingView'
-import Select from '@ir-engine/ui/src/primitives/tailwind/Select'
 import Text from '@ir-engine/ui/src/primitives/tailwind/Text'
 import Toggle from '@ir-engine/ui/src/primitives/tailwind/Toggle'
 
@@ -407,19 +405,23 @@ const ClientTab = forwardRef(({ open }: { open: boolean }, ref: React.MutableRef
         />
 
         <Select
-          className="col-span-1"
-          label={t('admin:components.setting.videoMaxResolution')}
-          currentValue={settings.mediaSettings.video.maxResolution.value}
+          labelProps={{
+            text: t('admin:components.setting.videoMaxResolution'),
+            position: 'top'
+          }}
+          value={settings.mediaSettings.video.maxResolution.value}
           options={videoMaxResolutionMenu}
-          onChange={(value) => settings.mediaSettings.video.maxResolution.set(value)}
+          onChange={(value: string) => settings.mediaSettings.video.maxResolution.set(value)}
         />
 
         <Select
-          className="col-span-1"
-          label={t('admin:components.setting.videoCodec')}
-          currentValue={settings.mediaSettings.video.codec.value}
+          labelProps={{
+            text: t('admin:components.setting.videoCodec'),
+            position: 'top'
+          }}
+          value={settings.mediaSettings.video.codec.value}
           options={codecMenu}
-          onChange={(value) => settings.mediaSettings.video.codec.set(value)}
+          onChange={(value: string) => settings.mediaSettings.video.codec.set(value)}
         />
 
         {(settings.mediaSettings.video.codec.value === 'VP8' ||
@@ -461,11 +463,13 @@ const ClientTab = forwardRef(({ open }: { open: boolean }, ref: React.MutableRef
         )}
 
         <Select
-          className="col-span-1"
-          label={t('admin:components.setting.screenshareCodec')}
-          currentValue={settings.mediaSettings.screenshare.codec.value}
+          labelProps={{
+            text: t('admin:components.setting.screenshareCodec'),
+            position: 'top'
+          }}
+          value={settings.mediaSettings.screenshare.codec.value}
           options={codecMenu}
-          onChange={(value) => settings.mediaSettings.screenshare.codec.set(value)}
+          onChange={(value: string) => settings.mediaSettings.screenshare.codec.set(value)}
         />
 
         {(settings.mediaSettings.screenshare.codec.value === 'VP8' ||
@@ -508,17 +512,11 @@ const ClientTab = forwardRef(({ open }: { open: boolean }, ref: React.MutableRef
       </div>
 
       <div className="mt-6 grid grid-cols-8 gap-6">
-        <Button size="small" className="text-primary col-span-1 bg-theme-highlight" onClick={handleCancel} fullWidth>
+        <Button size="sm" className="text-primary col-span-1 bg-theme-highlight" onClick={handleCancel} fullWidth>
           {t('admin:components.common.reset')}
         </Button>
-        <Button
-          size="small"
-          variant="primary"
-          className="col-span-1"
-          onClick={handleSubmit}
-          startIcon={state.loading.value && <LoadingView spinnerOnly className="h-6 w-6" />}
-          fullWidth
-        >
+        <Button size="sm" variant="primary" className="col-span-1" onClick={handleSubmit} fullWidth>
+          state.loading.value && <LoadingView spinnerOnly className="h-6 w-6" />
           {t('admin:components.common.save')}
         </Button>
       </div>
