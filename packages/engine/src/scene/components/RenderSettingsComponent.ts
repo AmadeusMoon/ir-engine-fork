@@ -71,6 +71,7 @@ export const RenderSettingsComponent = defineComponent({
 
     useEffect(() => {
       if (!rendererEntity) return
+      console.log('didnt return', rendererEntity)
       const renderer = getComponent(rendererEntity, RendererComponent).renderer!
       renderer.toneMapping = component.toneMapping.value
     }, [component.toneMapping])

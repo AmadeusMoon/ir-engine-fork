@@ -27,7 +27,7 @@ import './patchNodeForWebXREmulator'
 
 import { Entity, getComponent, setComponent } from '@ir-engine/ecs'
 import { EffectComposer, Pass, RenderPass } from 'postprocessing'
-import { NoToneMapping, WebGLRenderTarget, WebGLRenderer } from 'three'
+import { WebGLRenderTarget, WebGLRenderer } from 'three'
 import { RendererComponent } from '../../src/renderer/WebGLRendererSystem'
 import { createWebXRManager } from '../../src/xr/WebXRManager'
 import { MockEventListener } from './MockEventListener'
@@ -105,5 +105,4 @@ export const mockEngineRenderer = (entity: Entity) => {
   renderComponent.effectComposer = effectComposer
   renderComponent.renderPass = renderPass
   renderComponent.xrManager = xrManager
-  renderComponent.renderer.toneMapping = NoToneMapping
 }
