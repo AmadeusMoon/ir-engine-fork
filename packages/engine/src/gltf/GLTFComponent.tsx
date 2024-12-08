@@ -36,6 +36,7 @@ import {
   getComponent,
   getMutableComponent,
   getOptionalComponent,
+  getOptionalMutableComponent,
   hasComponent,
   UndefinedEntity,
   useComponent,
@@ -107,7 +108,7 @@ const loadDependencies = {
   ['EE_model']: [
     {
       key: 'dependencies',
-      eval: (dependencies) => componentDependenciesLoaded(dependencies as ComponentDependencies | undefined)
+      eval: (dependencies?: ComponentDependencies) => componentDependenciesLoaded(dependencies)
     }
   ]
 } as Record<string, DependencyEval[]>
@@ -375,8 +376,8 @@ const DependencyReactor = (props: { gltfComponentEntity: Entity; dependencies: C
   useEffect(() => {
     return () => {
       const ancestor = getAncestorWithComponents(gltfComponentEntity, [SceneComponent])
-      const scene = getMutableComponent(ancestor, SceneComponent)
-      scene.active.set(true)
+      const scene = getOptionalMutableComponent(ancestor, SceneComponent)
+      if (scene) scene.active.set(true)
       removeError(gltfComponentEntity, GLTFComponent, 'LOADING_ERROR')
       removeError(gltfComponentEntity, GLTFComponent, 'INVALID_SOURCE')
     }
@@ -471,16 +472,12 @@ const useGLTFDocument = (entity: Entity) => {
   useGLTFResource(url, entity)
 
   useEffect(() => {
-    return () => {
-      dispatchAction(GLTFSnapshotAction.unload({ source }))
-    }
-  }, [source])
-
-  useEffect(() => {
     if (!url) {
       addError(entity, GLTFComponent, 'INVALID_SOURCE', 'Invalid URL')
       return
     }
+
+    let loaded = false
 
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -516,6 +513,7 @@ const useGLTFDocument = (entity: Entity) => {
 
         const dependencies = buildComponentDependencies(gltf)
         state.dependencies.set(dependencies)
+        loaded = true
         dispatchAction(
           GLTFSnapshotAction.createSnapshot({
             source,
@@ -529,6 +527,7 @@ const useGLTFDocument = (entity: Entity) => {
     )
 
     return () => {
+      if (loaded) dispatchAction(GLTFSnapshotAction.unload({ source }))
       abortController.abort()
       if (!hasComponent(entity, GLTFComponent)) return
       state.body.set(null)
