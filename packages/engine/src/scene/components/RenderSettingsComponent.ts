@@ -73,7 +73,6 @@ export const RenderSettingsComponent = defineComponent({
       if (!rendererEntity) return
       const renderer = getComponent(rendererEntity, RendererComponent).renderer!
       renderer.toneMapping = component.toneMapping.value
-      console.log('earlynot', renderer)
     }, [component.toneMapping])
 
     useEffect(() => {
